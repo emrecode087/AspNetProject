@@ -1,0 +1,49 @@
+﻿@model MyTable
+
+<h2>Create Data</h2>
+<hr />
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Column1"></label>
+        <input asp-for="Column1" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column2"></label>
+        <input asp-for="Column2" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column3"></label>
+        <input asp-for="Column3" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column4"></label>
+        <input asp-for="Column4" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column5"></label>
+        <input asp-for="Column5" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column6"></label>
+        <input asp-for="Column6" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column7"></label>
+        <input asp-for="Column7" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column8"></label>
+        <input asp-for="Column8" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column9"></label>
+        <input asp-for="Column9" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Column10"></label>
+        <input asp-for="Column10" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
