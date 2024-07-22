@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityUser>
+﻿@model IEnumerable<AppUser>
 
 <a class="btn btn-primary" asp-action="Create">Create User</a>
 <hr />
@@ -7,7 +7,7 @@
     <thead>
         <tr>
             <th>Id</th>
-            <th>Name</th>
+            <th>FullName</th>
             <th>Email</th>
         </tr>
     </thead>
@@ -16,10 +16,10 @@
         {
             <tr>
                 <td>@user.Id</td>
-                <td>@user.UserName</td>
+                <td>@user.FullName</td>
                 <td>@user.Email</td>
                 <td>
-                    <a href="" class="">Edit</a>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="">Edit</a>
                     <a href="" class="">Delete</a>
                 </td>
             </tr>

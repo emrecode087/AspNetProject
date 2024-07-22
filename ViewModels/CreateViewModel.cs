@@ -5,8 +5,9 @@ namespace ProjectOneMil.ViewModels
     public class CreateViewModel
     {
         [Required]
-        public string UserName { get; set; } = String.Empty;
-        [Required]
+		public string FullName { get; set; } = String.Empty;
+
+		[Required]
         [EmailAddress]
         public string Email { get; set; } = String.Empty;
         [Required]
@@ -17,5 +18,7 @@ namespace ProjectOneMil.ViewModels
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; } = String.Empty;
 
-    }
+
+		
+	}
 }

@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ProjectOneMil.Models;
 using ProjectOneMil.ViewModels;
 
 namespace ProjectOneMil.Controllers
 {
     public class UsersController : Controller
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<AppUser> _userManager;
 
 
-        public UsersController(UserManager<IdentityUser> userManager)
+        public UsersController(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
 
@@ -30,10 +31,11 @@ namespace ProjectOneMil.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser
+                var user = new AppUser
                 {
-                    UserName = model.UserName,
+                    UserName = model.Email,
                     Email = model.Email,
+                    FullName = model.FullName
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
@@ -49,6 +51,29 @@ namespace ProjectOneMil.Controllers
                 
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if(id == null)
+            {
+                return RedirectToAction("Index");
+            }
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user != null)
+            {
+                return View(new EditViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email
+                });
+            }
+            
+                
+            
+            return RedirectToAction("Index");
         }
     }
 }

@@ -12,8 +12,8 @@ using ProjectOneMil.Data;
 namespace ProjectOneMil.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240710153139_init")]
-    partial class init
+    [Migration("20240722163555_DbContext")]
+    partial class DbContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

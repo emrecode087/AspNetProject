@@ -1,13 +1,13 @@
-﻿@model CreateViewModel
+﻿@model EditViewModel
 
-<h2>Create User</h2>
-<hr/>
-<form asp-action="Create" method="post">
+<h2>Edit User</h2>
+<hr />
+<form asp-action="Edit" method="post">
 	<div asp-validation-summary="All" class="text-danger"></div>
-
+	<input  type="hidden" name="Id" value="@Model.Id" />
 	<div class="mb-3">
 		<label asp-for="FullName"></label>
-		<input asp-for="FullName" class="form-control" />		
+		<input asp-for="FullName" class="form-control" />
 	</div>
 	<div class="mb-3">
 		<label asp-for="Email"></label>
