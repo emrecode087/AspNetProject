@@ -115,5 +115,30 @@ namespace ProjectOneMil.Controllers
             
            return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user != null)
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "User could not be deleted");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "User not found");
+            }
+            return View("Index", _userManager.Users);
+        }   
     }
 }
