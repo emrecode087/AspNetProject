@@ -23,11 +23,10 @@
 		<tr>
 			<td>@role.Id</td>
 			<td>@role.Name</td>
-			<td>Kullanıcı Listesi</td>
+			<td asp-role-users="@role.Id"></td>
 			<td>
 				<form method="post">
-					<a class="btn btn-primary btn-sm">Edit</a>
-					<button type="submit" class="btn btn-sm btn-danger">Delete</button>
+					<a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@role.Id">Edit</a>
 				</form>
 			</td>
 		</tr>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjectOneMil.Models;
 using ProjectOneMil.ViewModels;
 
@@ -8,11 +9,12 @@ namespace ProjectOneMil.Controllers
     public class UsersController : Controller
     {
         private UserManager<AppUser> _userManager;
+        private RoleManager<AppRole> _roleManager;
 
-
-        public UsersController(UserManager<AppUser> userManager)
+        public UsersController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
+			_roleManager = roleManager;
 
         }
 
@@ -33,7 +35,7 @@ namespace ProjectOneMil.Controllers
             {
                 var user = new AppUser
                 {
-                    UserName = model.Email,
+                    UserName = model.UserName,
                     Email = model.Email,
                     FullName = model.FullName
                 };
@@ -63,11 +65,13 @@ namespace ProjectOneMil.Controllers
 
             if(user != null)
             {
+                ViewBag.Roles = await _roleManager.Roles.Select(i => i.Name).ToListAsync();
                 return View(new EditViewModel
                 {
                     Id = user.Id,
                     FullName = user.FullName,
-                    Email = user.Email
+                    Email = user.Email,
+                    SelectedRoles = await _userManager.GetRolesAsync(user)
                 });
             }
             
@@ -102,7 +106,13 @@ namespace ProjectOneMil.Controllers
                     }    
                      if (result.Succeeded)
                      {
-                          return RedirectToAction("Index");
+                        await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+                        
+                        if(model.SelectedRoles != null)
+						{
+							await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+						}   
+                        return RedirectToAction("Index");
                      }
     
                      foreach (IdentityError err in result.Errors)
