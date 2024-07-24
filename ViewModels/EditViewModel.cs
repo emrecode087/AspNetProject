@@ -19,6 +19,7 @@ namespace ProjectOneMil.ViewModels
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string? ConfirmPassword { get; set; } 
 
-		
+        public IList<string>? SelectedRoles { get; set; }
+
 	}
 }

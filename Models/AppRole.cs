@@ -5,6 +5,6 @@ namespace ProjectOneMil.Models
 	public class AppRole : IdentityRole
 	{
 
-
+		
 	}
 }
