@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectOneMil.Models;
@@ -6,6 +7,7 @@ using ProjectOneMil.ViewModels;
 
 namespace ProjectOneMil.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         private UserManager<AppUser> _userManager;
@@ -20,6 +22,8 @@ namespace ProjectOneMil.Controllers
 
         public IActionResult Index()
         {
+          
+
             return View(_userManager.Users);
         }
 

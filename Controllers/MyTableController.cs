@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectOneMil.Data;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectOneMil.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class MyTableController : Controller
     {
         private readonly AppDbContext _context;
