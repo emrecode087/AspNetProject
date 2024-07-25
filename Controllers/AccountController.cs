@@ -146,5 +146,16 @@ namespace ProjectOneMil.Controllers
             }
 			return View();
 		}
+
+		public async Task<IActionResult> Logout()
+		{
+			await _signInManager.SignOutAsync();
+			return RedirectToAction("Login");
+		}
+
+		public IActionResult AccessDenied()
+		{
+			   return View();
+		}
     }
 }
