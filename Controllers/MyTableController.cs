@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectOneMil.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjectOneMil.Controllers
@@ -17,35 +16,27 @@ namespace ProjectOneMil.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var myTableList = await _context.onemildata.Take(10).ToListAsync();
-
-            // Veri çekildiğini kontrol etmek için
-            if (myTableList != null && myTableList.Any())
-            {
-                Console.WriteLine("Veriler çekildi.");
-                foreach (var item in myTableList)
-                {
-                    Console.WriteLine($"{item.Id} - {item.Column1}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Veritabanında veri bulunamadı.");
-            }
-
-            return View(myTableList);
+            return View();
         }
 
-        // Yeni veri eklemek için formu gösterir
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> GetMyTableData()
+        {
+            using (_context)
+            {
+                var _data = await _context.onemildata.ToListAsync();
+                return Json(new { data = _data });
+            }
+        }
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // Yeni veri eklemek için formdan gelen verileri işler
         [HttpPost]
         public async Task<IActionResult> Create(MyTable myTable)
         {

@@ -1,30 +1,28 @@
-﻿@if(TempData["message"] != null)
-{
-	<div class="alert alert-success" role="alert">
-		@TempData["message"]
-	</div>
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<title>HOME</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css" />
+    <!-- jQuery'nin DataTables'tan önce yüklendiğinden emin olun -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+    <title>@ViewData["Title"] - My ASP.NET Application</title>
 </head>
 <body>
-	<div>
-		<header>
-			@await Html.PartialAsync("_Navbar")
-			@RenderSection("Header", false)
-		</header>
-		<div class="container mt-3">
-			<main>
-				@RenderBody()
-			</main>
-		</div>
-	</div>
+    <div>
+        <header>
+            @await Html.PartialAsync("_Navbar")
+            @RenderSection("Header", false)
+        </header>
+        <div class="container mt-3">
+            <main>
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

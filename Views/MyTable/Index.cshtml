@@ -1,12 +1,11 @@
-﻿@model IEnumerable<ProjectOneMil.Data.MyTable>
-
-@{
+﻿@{
     ViewData["Title"] = "MyTable Index";
 }
+
 <a class="btn btn-primary" asp-action="Create">Create Data</a>
 <hr />
-<table class="table table-striped table-bordered">
-    <thead class="bg-primary text-white">
+<table id="example" class="display" style="width:50%">
+    <thead>
         <tr>
             <th>Id</th>
             <th>Column1</th>
@@ -21,36 +20,31 @@
             <th>Column10</th>
         </tr>
     </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            var limitedModel = Model.Take(10); // Limit the data to the first 10 items
-            foreach (var item in limitedModel)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Column1</td>
-                    <td>@item.Column2</td>
-                    <td>@item.Column3</td>
-                    <td>@item.Column4</td>
-                    <td>@item.Column5</td>
-                    <td>@item.Column6</td>
-                    <td>@item.Column7</td>
-                    <td>@item.Column8</td>
-                    <td>@item.Column9</td>
-                    <td>@item.Column10</td>
-                    <td>
-                        <a href="" class="">Edit</a>
-                        <a href="" class="">Delete</a>
-                    </td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="11" class="text-center">No data available</td>
-            </tr>
-        }
-    </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "ajax": {
+                    "url": "@Url.Action("GetMyTableData", "MyTable")",
+                    "datatype": "json",
+                    "type": "GET"
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Column1" },
+                    { "data": "Column2" },
+                    { "data": "Column3" },
+                    { "data": "Column4" },
+                    { "data": "Column5" },
+                    { "data": "Column6" },
+                    { "data": "Column7" },
+                    { "data": "Column8" },
+                    { "data": "Column9" },
+                    { "data": "Column10" }
+                ]
+            });
+        });
+    </script>
+}
