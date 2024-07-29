@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "MyTable Index";
+    var columnNames = new[] { "Id", "Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10" };
 }
 
 <a class="btn btn-primary" asp-action="Create">Create Data</a>
@@ -8,17 +9,10 @@
     <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Column1</th>
-                <th>Column2</th>
-                <th>Column3</th>
-                <th>Column4</th>
-                <th>Column5</th>
-                <th>Column6</th>
-                <th>Column7</th>
-                <th>Column8</th>
-                <th>Column9</th>
-                <th>Column10</th>
+                @for (var i = 0; i < columnNames.Length; i++)
+                {
+                    <th>@columnNames[i]</th>
+                }
             </tr>
         </thead>
     </table>
@@ -36,7 +30,7 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                "scrollX": true, // Yatay kaydırma çubuğunu etkinleştirmek için
+                "scrollX": true,
                 "columns": [
                     { "data": "id", "name": "Id", "width": "50px" },
                     { "data": "column1", "name": "Column1", "width": "100px" },
