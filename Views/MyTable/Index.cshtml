@@ -4,45 +4,51 @@
 
 <a class="btn btn-primary" asp-action="Create">Create Data</a>
 <hr />
-<table id="example" class="display" style="width:50%">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Column1</th>
-            <th>Column2</th>
-            <th>Column3</th>
-            <th>Column4</th>
-            <th>Column5</th>
-            <th>Column6</th>
-            <th>Column7</th>
-            <th>Column8</th>
-            <th>Column9</th>
-            <th>Column10</th>
-        </tr>
-    </thead>
-</table>
+<div style="overflow-x:auto;">
+    <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Column1</th>
+                <th>Column2</th>
+                <th>Column3</th>
+                <th>Column4</th>
+                <th>Column5</th>
+                <th>Column6</th>
+                <th>Column7</th>
+                <th>Column8</th>
+                <th>Column9</th>
+                <th>Column10</th>
+            </tr>
+        </thead>
+    </table>
+</div>
 
 @section Scripts {
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#example').DataTable({
                 "ajax": {
                     "url": "@Url.Action("GetMyTableData", "MyTable")",
-                    "datatype": "json",
-                    "type": "GET"
+                    "type": "POST"
                 },
+                "processing": true,
+                "serverSide": true,
+                "scrollX": true, // Yatay kaydırma çubuğunu etkinleştirmek için
                 "columns": [
-                    { "data": "Id" },
-                    { "data": "Column1" },
-                    { "data": "Column2" },
-                    { "data": "Column3" },
-                    { "data": "Column4" },
-                    { "data": "Column5" },
-                    { "data": "Column6" },
-                    { "data": "Column7" },
-                    { "data": "Column8" },
-                    { "data": "Column9" },
-                    { "data": "Column10" }
+                    { "data": "id", "name": "Id", "width": "50px" },
+                    { "data": "column1", "name": "Column1", "width": "100px" },
+                    { "data": "column2", "name": "Column2", "width": "100px" },
+                    { "data": "column3", "name": "Column3", "width": "100px" },
+                    { "data": "column4", "name": "Column4", "width": "150px" },
+                    { "data": "column5", "name": "Column5", "width": "50px" },
+                    { "data": "column6", "name": "Column6", "width": "150px" },
+                    { "data": "column7", "name": "Column7", "width": "150px" },
+                    { "data": "column8", "name": "Column8", "width": "100px" },
+                    { "data": "column9", "name": "Column9", "width": "100px" },
+                    { "data": "column10", "name": "Column10", "width": "200px" }
                 ]
             });
         });

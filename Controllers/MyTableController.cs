@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectOneMil.Data;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
 
 namespace ProjectOneMil.Controllers
 {
@@ -22,16 +24,6 @@ namespace ProjectOneMil.Controllers
         }
 
         [HttpGet]
-        [HttpGet]
-        public async Task<IActionResult> GetMyTableData()
-        {
-            using (_context)
-            {
-                var _data = await _context.onemildata.ToListAsync();
-                return Json(new { data = _data });
-            }
-        }
-        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -47,6 +39,48 @@ namespace ProjectOneMil.Controllers
                 return RedirectToAction("Index");
             }
             return View(myTable);
+        }
+
+        [HttpPost]
+        public JsonResult GetMyTableData()
+        {
+            var data = _context.onemildata.AsQueryable();
+
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var length = Convert.ToInt32(Request.Form["length"].FirstOrDefault());
+            var start = Convert.ToInt32(Request.Form["start"].FirstOrDefault());
+            var orderColumnIndex = Request.Form["order[0][column]"].FirstOrDefault();
+            var orderDir = Request.Form["order[0][dir]"].FirstOrDefault();
+            var orderColumnName = Request.Form[$"columns[{orderColumnIndex}][name]"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+            int recordTotal = data.Count();
+            int recordsFiltered = data.Count();
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                data = data.Where(x => x.Column1.ToLower().Contains(searchValue.ToLower()) ||
+                                       x.Column6.ToLower().Contains(searchValue.ToLower()) ||
+                                       x.Column7.ToLower().Contains(searchValue.ToLower()));
+                recordsFiltered = data.Count();
+            }
+
+            if (!string.IsNullOrEmpty(orderColumnName) && !string.IsNullOrEmpty(orderDir))
+            {
+                data = data.OrderBy($"{orderColumnName} {(orderDir == "asc" ? "ascending" : "descending")}");
+            }
+
+            var myTableData = data.Skip(start).Take(length).ToList();
+
+            var result = new
+            {
+                draw = draw,
+                recordsTotal = recordTotal,
+                recordsFiltered = recordsFiltered,
+                data = myTableData
+            };
+
+            return Json(result);
         }
     }
 }
