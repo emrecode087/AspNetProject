@@ -1,9 +1,10 @@
 ﻿@model ProjectOneMil.Data.MyTable
 
-<h2>Create Data</h2>
+<h2>Edit Data</h2>
 <hr />
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
         <label asp-for="Column1"></label>
@@ -24,8 +25,8 @@
     <div class="mb-3">
         <label asp-for="Column5"></label>
         <select asp-for="Column5" class="form-control">
-            <option value="true">True</option>
-            <option value="false">False</option>
+            <option value="true" selected="@(Model.Column5 ? "selected" : null)">True</option>
+            <option value="false" selected="@(Model.Column5 ? null : "selected")">False</option>
         </select>
     </div>
     <div class="mb-3">

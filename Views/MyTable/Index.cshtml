@@ -5,25 +5,28 @@
 
 <a class="btn btn-primary" asp-action="Create">Create Data</a>
 <hr />
-<div style="overflow-x:auto;">
-    <table id="example" class="display" style="width:100%">
+<div class="table-responsive">
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 @for (var i = 0; i < columnNames.Length; i++)
                 {
                     <th>@columnNames[i]</th>
                 }
+                <th>Actions</th> <!-- Actions sütunu -->
             </tr>
         </thead>
     </table>
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#example').DataTable({
+            var table = $('#example').DataTable({
                 "ajax": {
                     "url": "@Url.Action("GetMyTableData", "MyTable")",
                     "type": "POST"
@@ -32,18 +35,51 @@
                 "serverSide": true,
                 "scrollX": true,
                 "columns": [
-                    { "data": "id", "name": "Id", "width": "50px" },
-                    { "data": "column1", "name": "Column1", "width": "100px" },
-                    { "data": "column2", "name": "Column2", "width": "100px" },
-                    { "data": "column3", "name": "Column3", "width": "100px" },
-                    { "data": "column4", "name": "Column4", "width": "150px" },
-                    { "data": "column5", "name": "Column5", "width": "50px" },
-                    { "data": "column6", "name": "Column6", "width": "150px" },
-                    { "data": "column7", "name": "Column7", "width": "150px" },
-                    { "data": "column8", "name": "Column8", "width": "100px" },
-                    { "data": "column9", "name": "Column9", "width": "100px" },
-                    { "data": "column10", "name": "Column10", "width": "200px" }
+                    { "data": "id", "name": "Id" },
+                    { "data": "column1", "name": "Column1" },
+                    { "data": "column2", "name": "Column2" },
+                    { "data": "column3", "name": "Column3" },
+                    { "data": "column4", "name": "Column4" },
+                    { "data": "column5", "name": "Column5" },
+                    { "data": "column6", "name": "Column6" },
+                    { "data": "column7", "name": "Column7" },
+                    { "data": "column8", "name": "Column8" },
+                    { "data": "column9", "name": "Column9" },
+                    { "data": "column10", "name": "Column10" },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return '<button class="btn btn-primary edit-btn" data-id="' + row.id + '">Edit</button> ' +
+                                '<button class="btn btn-danger delete-btn mt-2 " data-id="' + row.id + '">Delete</button>';
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "150px"
+                    }
                 ]
+            });
+
+            // Edit butonuna tıklama olayı
+            $('#example').on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+                window.location.href = '@Url.Action("Edit", "MyTable")/' + id;
+            });
+
+            // Delete butonuna tıklama olayı
+            $('#example').on('click', '.delete-btn', function () {
+                var id = $(this).data('id');
+                if (confirm("Are you sure you want to delete this record?")) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "MyTable")/' + id,
+                        type: 'DELETE',
+                        success: function (result) {
+                            table.ajax.reload();
+                        },
+                        error: function (err) {
+                            alert('Error deleting record');
+                        }
+                    });
+                }
             });
         });
     </script>
