@@ -8,7 +8,7 @@ using System.Linq.Dynamic.Core;
 
 namespace ProjectOneMil.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,manager")]
     public class MyTableController : Controller
     {
         private readonly AppDbContext _context;
