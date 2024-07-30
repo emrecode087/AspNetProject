@@ -23,6 +23,12 @@
                         </li>
                     }
                     
+                    else if (User.IsInRole("manager"))
+					{
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-controller="MyTable" asp-action="Index" class="nav-link">Data</a>
+						</li>
+					}
                 }
                 
             </ul>
