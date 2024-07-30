@@ -18,7 +18,7 @@ namespace ProjectOneMil.Models
 			_port = port;
 			_enableSSL = enableSSL;
 			_username = username;
-			_password = password; // Düzeltme burada yapıldı
+			_password = password; 
 		}
 
 		public Task SendEmailAsync(string email, string subject, string message)

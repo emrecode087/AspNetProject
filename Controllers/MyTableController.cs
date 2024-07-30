@@ -41,6 +41,48 @@ namespace ProjectOneMil.Controllers
             return View(myTable);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var myTable = await _context.onemildata.FindAsync(id);
+            if (myTable == null)
+            {
+                return NotFound();
+            }
+            return View(myTable);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, MyTable myTable)
+        {
+            if (id != myTable.Id)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(myTable);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.onemildata.Any(e => e.Id == id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(myTable);
+        }
+
         [HttpPost]
         public JsonResult GetMyTableData()
         {
@@ -81,6 +123,20 @@ namespace ProjectOneMil.Controllers
             };
 
             return Json(result);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var myTable = _context.onemildata.Find(id);
+            if (myTable == null)
+            {
+                return NotFound();
+            }
+
+            _context.onemildata.Remove(myTable);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
