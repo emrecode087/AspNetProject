@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using ProjectOneMil.Data;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
-using OfficeOpenXml;
-using System.IO;
 
 namespace ProjectOneMil.Controllers
 {
@@ -144,24 +147,58 @@ namespace ProjectOneMil.Controllers
         [HttpGet]
         public async Task<IActionResult> Download()
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // Lisans bağlamını ayarlayın
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            var data = await _context.onemildata.ToListAsync();
+            // Veritabanından verileri ID'ye göre sıralayarak çekiyoruz
+            var data = await _context.onemildata.OrderBy(d => d.Id).ToListAsync();
 
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("MyTableData");
-                worksheet.Cells.LoadFromCollection(data, true);
+
+                // Header row
+                worksheet.Cells[1, 1].Value = "Id";
+                worksheet.Cells[1, 2].Value = "Column1";
+                worksheet.Cells[1, 3].Value = "Column2";
+                worksheet.Cells[1, 4].Value = "Column3";
+                worksheet.Cells[1, 5].Value = "Column4";
+                worksheet.Cells[1, 6].Value = "Column5";
+                worksheet.Cells[1, 7].Value = "Column6";
+                worksheet.Cells[1, 8].Value = "Column7";
+                worksheet.Cells[1, 9].Value = "Column8";
+                worksheet.Cells[1, 10].Value = "Column9";
+                worksheet.Cells[1, 11].Value = "Column10";
+
+                // Data rows
+                for (int i = 0; i < data.Count; i++)
+                {
+                    var row = i + 2;
+                    worksheet.Cells[row, 1].Value = data[i].Id;
+                    worksheet.Cells[row, 2].Value = data[i].Column1;
+                    worksheet.Cells[row, 3].Value = data[i].Column2;
+                    worksheet.Cells[row, 4].Value = data[i].Column3;
+                    worksheet.Cells[row, 5].Value = data[i].Column4.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); // Tarih formatı
+                    worksheet.Cells[row, 6].Value = data[i].Column5 ? "DOĞRU" : "YANLIŞ"; // Boolean formatı
+                    worksheet.Cells[row, 7].Value = data[i].Column6;
+                    worksheet.Cells[row, 8].Value = data[i].Column7;
+                    worksheet.Cells[row, 9].Value = data[i].Column8;
+                    worksheet.Cells[row, 10].Value = data[i].Column9;
+                    worksheet.Cells[row, 11].Value = data[i].Column10;
+                }
 
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
                 stream.Position = 0;
 
-                string excelName = $"MyTableData-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+                string excelName = $"MyTableData-{DateTime.Now:yyyyMMddHHmmssfff}.xlsx";
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
             }
         }
 
+
+
+
+        /*
         [HttpPost]
         public async Task<IActionResult> Import(IFormFile file)
         {
@@ -190,17 +227,37 @@ namespace ProjectOneMil.Controllers
 
                         for (int row = 2; row <= rowCount; row++)
                         {
+                            // Column4 (DateTime) dönüştürme
+                            double oaDate;
+                            if (!double.TryParse(worksheet.Cells[row, 4].Text.Replace(',', '.'), out oaDate))
+                            {
+                                return BadRequest($"Invalid OADate value at row {row}, column 4: '{worksheet.Cells[row, 4].Text}'.");
+                            }
+                            DateTime column4 = DateTime.FromOADate(oaDate);
+
+                            // Column3 ve Column9 (Decimal) dönüştürme
+                            decimal column3;
+                            if (!decimal.TryParse(worksheet.Cells[row, 3].Text.Replace(',', '.'), out column3))
+                            {
+                                return BadRequest($"Invalid decimal value at row {row}, column 3: '{worksheet.Cells[row, 3].Text}'.");
+                            }
+                            decimal column9;
+                            if (!decimal.TryParse(worksheet.Cells[row, 9].Text.Replace(',', '.'), out column9))
+                            {
+                                return BadRequest($"Invalid decimal value at row {row}, column 9: '{worksheet.Cells[row, 9].Text}'.");
+                            }
+
                             var myTable = new MyTable
                             {
                                 Column1 = worksheet.Cells[row, 1].Text,
                                 Column2 = int.Parse(worksheet.Cells[row, 2].Text),
-                                Column3 = decimal.Parse(worksheet.Cells[row, 3].Text),
-                                Column4 = DateTime.Parse(worksheet.Cells[row, 4].Text),
-                                Column5 = bool.Parse(worksheet.Cells[row, 5].Text),
+                                Column3 = column3,
+                                Column4 = column4,
+                                Column5 = bool.Parse(worksheet.Cells[row, 5].Text.ToUpper() == "DOĞRU" ? "true" : "false"),
                                 Column6 = worksheet.Cells[row, 6].Text,
                                 Column7 = worksheet.Cells[row, 7].Text,
                                 Column8 = int.Parse(worksheet.Cells[row, 8].Text),
-                                Column9 = decimal.Parse(worksheet.Cells[row, 9].Text),
+                                Column9 = column9,
                                 Column10 = Guid.Parse(worksheet.Cells[row, 10].Text)
                             };
                             myTableList.Add(myTable);
@@ -218,5 +275,17 @@ namespace ProjectOneMil.Controllers
 
             return RedirectToAction("Index");
         }
+
+        private bool VerifyMyTableData(MyTable myTable)
+        {
+            // Burada veri doğrulama işlemlerini yapabilirsiniz
+            // Örnek olarak:
+            if (string.IsNullOrEmpty(myTable.Column1) || myTable.Column2 <= 0 || myTable.Column3 <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        */
     }
 }
