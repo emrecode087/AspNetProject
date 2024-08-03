@@ -30,14 +30,26 @@ This project is configured to develop web applications using .NET 8.0. The proje
 ### Steps
 
 1. Clone the repository:
-git clone https://github.com/username/ProjectOneMil.git
-cd ProjectOneMil
+    ```sh
+    git clone https://github.com/username/ProjectOneMil.git
+    cd ProjectOneMil
+    ```
 2. Restore the required packages:
-dotnet restore
+    ```sh
+    dotnet restore
+    ```
 3. Update the database connection string in the `appsettings.json` file.
 
 4. Apply the database migrations:
+    ```sh
+    dotnet ef database update
+    ```
+
 5. Run the application:
+    ```sh
+    dotnet run
+    ```
+
 ## Usage
 
 - After starting the application, navigate to `http://localhost:5000` in your browser.
