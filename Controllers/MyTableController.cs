@@ -1,19 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using ProjectOneMil.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
 
 namespace ProjectOneMil.Controllers
 {
-    [Authorize(Roles = "admin,manager")]
+	[Authorize(Roles = "admin,manager")]
     public class MyTableController : Controller
     {
         private readonly AppDbContext _context;

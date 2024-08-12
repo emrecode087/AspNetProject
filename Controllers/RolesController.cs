@@ -9,7 +9,9 @@ namespace ProjectOneMil.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
 
-        public RolesController(RoleManager<AppRole> roleManager, UserManager<AppUser> userManager)
+        public RolesController(
+	        RoleManager<AppRole> roleManager,
+	        UserManager<AppUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -87,5 +89,27 @@ namespace ProjectOneMil.Controllers
             }
             return View(model);
         }
+
+        /*
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+		{
+			var role = await _roleManager.FindByIdAsync(id);
+			if (role != null)
+			{
+				var result = await _roleManager.DeleteAsync(role);
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index");
+				}
+				foreach (IdentityError err in result.Errors)
+				{
+					ModelState.AddModelError("", err.Description);
+				}
+			}
+			return RedirectToAction("Index");
+		}
+        */
     }
+
 }
