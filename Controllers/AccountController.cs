@@ -155,7 +155,7 @@ namespace ProjectOneMil.Controllers
 
 		public IActionResult AccessDenied()
 		{
-			   return View();
+			   return View("Login");
 		}
     }
 }
