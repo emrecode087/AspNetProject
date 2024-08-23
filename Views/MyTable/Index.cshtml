@@ -3,11 +3,14 @@
     var columnNames = new[] { "Id", "Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10" };
 }
 
-<a class="btn btn-primary" asp-action="Create">Create Data</a>
-<a class="btn btn-primary" asp-action="Download" id="downloadButton">Download Data</a>
+<a class="btn btn-danger" asp-action="Create">Create Data</a>
+<a class="btn btn-danger" asp-action="Download" id="downloadButton">Download Data</a>
+<!--
 <button type="button" class="btn btn-primary" id="importButton">Import Excel</button>
-<input type="file" name="file" id="fileInput" />
-<hr />
+<input type="file" name="file" id="fileInput"></input>
+-->
+<hr>
+</hr>
 
 <div class="table-responsive">
     <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -17,7 +20,7 @@
                 {
                     <th>@columnNames[i]</th>
                 }
-                <th>Actions</th> <!-- Actions sütunu -->
+                <th>Actions</th> 
             </tr>
         </thead>
     </table>
@@ -28,6 +31,7 @@
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    */
     <script>
         $(document).ready(function () {
             var table = $('#example').DataTable({
