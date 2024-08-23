@@ -5,16 +5,16 @@ using ProjectOneMil.ViewModels;
 
 namespace ProjectOneMil.Controllers
 {
-    public class AccountController: Controller
-    {
+	public class AccountController : Controller
+	{
 
 		private UserManager<AppUser> _userManager;
 		private RoleManager<AppRole> _roleManager;
-        private SignInManager<AppUser> _signInManager;
+		private SignInManager<AppUser> _signInManager;
 		private IEmailSender _emailSender;
 
 		public AccountController(
-            UserManager<AppUser> userManager,
+			UserManager<AppUser> userManager,
 			RoleManager<AppRole> roleManager,
 			SignInManager<AppUser> signInManager,
 			IEmailSender emailSender)
@@ -26,10 +26,10 @@ namespace ProjectOneMil.Controllers
 		}
 
 		[HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+		public IActionResult Login()
+		{
+			return View();
+		}
 
 		public IActionResult Create()
 		{
@@ -56,11 +56,11 @@ namespace ProjectOneMil.Controllers
 					var url = Url.Action("ConfirmEmail", "Account", new { user.Id, token });
 
 					//email
-					await _emailSender.SendEmailAsync(user.Email, 
+					await _emailSender.SendEmailAsync(user.Email,
 						"Confirm your email", $"Please confirm your account by clicking this link: <a href='http://localhost:5264{url}'>link</a>");
 
 					TempData["message"] = "Confirm your e-mail";
-					return RedirectToAction("Login","Account");
+					return RedirectToAction("Login", "Account");
 				}
 
 				foreach (IdentityError err in result.Errors)
@@ -73,19 +73,19 @@ namespace ProjectOneMil.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> ConfirmEmail(string Id,string token)
+		public async Task<IActionResult> ConfirmEmail(string Id, string token)
 		{
-			if(Id == null || token == null)
+			if (Id == null || token == null)
 			{
 				TempData["message"] = "Invalid token";
-				return View(); 
+				return View();
 			}
 
-			var user = _userManager.FindByIdAsync(Id).Result;
+			var user = await _userManager.FindByIdAsync(Id);
 
 			if (user != null)
 			{
-				var result = _userManager.ConfirmEmailAsync(user, token).Result;
+				var result = await _userManager.ConfirmEmailAsync(user, token);
 
 				if (result.Succeeded)
 				{
@@ -105,45 +105,45 @@ namespace ProjectOneMil.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel model)
 		{
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-				
-                if(user != null)
+			if (ModelState.IsValid)
+			{
+				var user = await _userManager.FindByEmailAsync(model.Email);
+
+				if (user != null)
 				{
 					await _signInManager.SignOutAsync();
 
-                    if(!await _userManager.IsEmailConfirmedAsync(user))
+					if (!await _userManager.IsEmailConfirmedAsync(user))
 					{
 						ModelState.AddModelError("", "Please confirm your email address.");
 						return View(model);
 					}
 
-                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
+					var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
 
-                    if (result.Succeeded)
-                    {
-                        await _userManager.ResetAccessFailedCountAsync(user);
-                        await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+					if (result.Succeeded)
+					{
+						await _userManager.ResetAccessFailedCountAsync(user);
+						await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
 
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else if (result.IsLockedOut) 
-                    {
-                        var lockoutDate = await _userManager.GetLockoutEndDateAsync(user);
-                        var timeLeft = lockoutDate.Value-DateTimeOffset.UtcNow;
-                        ModelState.AddModelError("", $"Your account is locked out. Please try again in {timeLeft.Minutes} minutes.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Invalid login attempt");
-                    }
+						return RedirectToAction("Index", "Home");
+					}
+					else if (result.IsLockedOut)
+					{
+						var lockoutDate = await _userManager.GetLockoutEndDateAsync(user);
+						var timeLeft = lockoutDate.Value - DateTimeOffset.UtcNow;
+						ModelState.AddModelError("", $"Your account is locked out. Please try again in {timeLeft.Minutes} minutes.");
+					}
+					else
+					{
+						ModelState.AddModelError("", "Invalid login attempt");
+					}
 				}
-                else
+				else
 				{
 					ModelState.AddModelError("", "Invalid login attempt");
 				}
-            }
+			}
 			return View();
 		}
 
@@ -155,7 +155,7 @@ namespace ProjectOneMil.Controllers
 
 		public IActionResult AccessDenied()
 		{
-			   return View("Login");
+			return View("Login");
 		}
-    }
+	}
 }
