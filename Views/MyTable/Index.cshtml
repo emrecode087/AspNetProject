@@ -4,11 +4,9 @@
 }
 
 <a class="btn btn-danger" asp-action="Create">Create Data</a>
-<a class="btn btn-danger" asp-action="Download" id="downloadButton">Download Data</a>
-<!--
-<button type="button" class="btn btn-primary" id="importButton">Import Excel</button>
-<input type="file" name="file" id="fileInput"></input>
--->
+<a class="btn btn-dark" asp-action="Download" id="downloadButton">Download Data</a>
+<button type="button" class="btn btn-danger" id="importButton">Import Excel</button>
+<input type="file" name="file" id="fileInput" style="display:none;"></input>
 <hr>
 </hr>
 
@@ -20,7 +18,7 @@
                 {
                     <th>@columnNames[i]</th>
                 }
-                <th>Actions</th> 
+                <th>Actions</th>
             </tr>
         </thead>
     </table>
@@ -66,13 +64,13 @@
                 ]
             });
 
-            // Edit butonuna tıklama olayı
+            // Edit button click event
             $('#example').on('click', '.edit-btn', function () {
                 var id = $(this).data('id');
                 window.location.href = '@Url.Action("Edit", "MyTable")/' + id;
             });
 
-            // Delete butonuna tıklama olayı
+            // Delete button click event
             $('#example').on('click', '.delete-btn', function () {
                 var id = $(this).data('id');
                 if (confirm("Are you sure you want to delete this record?")) {
@@ -89,7 +87,7 @@
                 }
             });
 
-            // Download butonuna tıklama olayı
+            // Download button click event
             $('#downloadButton').on('click', function () {
                 var $this = $(this);
                 $this.prop('disabled', true).text('Downloading...');
@@ -112,16 +110,13 @@
                 });
             });
 
-            /*
-            // Import butonuna tıklama olayı
+            // Import button click event
             $('#importButton').on('click', function () {
-                var fileInput = document.getElementById('fileInput');
-                if (!fileInput) {
-                    alert('File input element not found.');
-                    return;
-                }
+                $('#fileInput').click();
+            });
 
-                var file = fileInput.files[0];
+            $('#fileInput').on('change', function () {
+                var file = this.files[0];
                 if (!file) {
                     alert('Please select a file to import.');
                     return;
@@ -131,7 +126,7 @@
                 formData.append('file', file);
 
                 $.ajax({
-                    url: '@Url. Action("Import", "MyTable")',
+                    url: '@Url.Action("Upload", "MyTable")',
                     type: 'POST',
                     data: formData,
                     processData: false,
@@ -145,9 +140,7 @@
                         alert('An error occurred while importing the file.');
                     }
                 });
-
             });
-            */
         });
     </script>
 }

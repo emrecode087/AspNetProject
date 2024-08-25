@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using ProjectOneMil.Data;
 using System.Linq.Dynamic.Core;
+using System.Text;
+using ExcelDataReader;
 
 namespace ProjectOneMil.Controllers
 {
@@ -190,97 +192,82 @@ namespace ProjectOneMil.Controllers
             }
         }
 
-
-
-
-        /*
         [HttpPost]
-        public async Task<IActionResult> Import(IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
 
-            try
+            if (!Directory.Exists(uploadsFolder))
             {
-                using (var stream = new MemoryStream())
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
-                    await file.CopyToAsync(stream);
-                    using (var package = new ExcelPackage(stream))
+                    bool isHeaderSkipped = false;
+                    while (reader.Read())
                     {
-                        var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-                        if (worksheet == null)
+                        if (!isHeaderSkipped)
                         {
-                            return BadRequest("No worksheet found in the Excel file.");
+                            isHeaderSkipped = true;
+                            continue;
                         }
 
-                        var rowCount = worksheet.Dimension.Rows;
-                        var myTableList = new List<MyTable>();
-
-                        for (int row = 2; row <= rowCount; row++)
+                        try
                         {
-                            // Column4 (DateTime) dönüştürme
-                            double oaDate;
-                            if (!double.TryParse(worksheet.Cells[row, 4].Text.Replace(',', '.'), out oaDate))
-                            {
-                                return BadRequest($"Invalid OADate value at row {row}, column 4: '{worksheet.Cells[row, 4].Text}'.");
-                            }
-                            DateTime column4 = DateTime.FromOADate(oaDate);
-
-                            // Column3 ve Column9 (Decimal) dönüştürme
-                            decimal column3;
-                            if (!decimal.TryParse(worksheet.Cells[row, 3].Text.Replace(',', '.'), out column3))
-                            {
-                                return BadRequest($"Invalid decimal value at row {row}, column 3: '{worksheet.Cells[row, 3].Text}'.");
-                            }
-                            decimal column9;
-                            if (!decimal.TryParse(worksheet.Cells[row, 9].Text.Replace(',', '.'), out column9))
-                            {
-                                return BadRequest($"Invalid decimal value at row {row}, column 9: '{worksheet.Cells[row, 9].Text}'.");
-                            }
-
                             var myTable = new MyTable
                             {
-                                Column1 = worksheet.Cells[row, 1].Text,
-                                Column2 = int.Parse(worksheet.Cells[row, 2].Text),
-                                Column3 = column3,
-                                Column4 = column4,
-                                Column5 = bool.Parse(worksheet.Cells[row, 5].Text.ToUpper() == "DOĞRU" ? "true" : "false"),
-                                Column6 = worksheet.Cells[row, 6].Text,
-                                Column7 = worksheet.Cells[row, 7].Text,
-                                Column8 = int.Parse(worksheet.Cells[row, 8].Text),
-                                Column9 = column9,
-                                Column10 = Guid.Parse(worksheet.Cells[row, 10].Text)
+                                Column1 = reader.GetValue(1)?.ToString() ?? string.Empty,
+                                Column2 = int.TryParse(reader.GetValue(2)?.ToString(), out int col2) ? col2 : 0,
+                                Column3 = decimal.TryParse(reader.GetValue(3)?.ToString(), out decimal col3) ? col3 : 0,
+                                Column4 = DateTime.TryParse(reader.GetValue(4)?.ToString(), out DateTime col4) ? col4 : DateTime.MinValue,
+                                Column5 = reader.GetValue(5)?.ToString().ToLower() switch
+                                {
+                                    "doğru" => true,
+                                    "true" => true,
+                                    "yanlış" => false,
+                                    "false" => false,
+                                    _ => false
+                                },
+                                Column6 = reader.GetValue(6)?.ToString() ?? string.Empty,
+                                Column7 = reader.GetValue(7)?.ToString() ?? string.Empty,
+                                Column8 = int.TryParse(reader.GetValue(8)?.ToString(), out int col8) ? col8 : 0,
+                                Column9 = decimal.TryParse(reader.GetValue(9)?.ToString(), out decimal col9) ? col9 : 0,
+                                Column10 = Guid.TryParse(reader.GetValue(10)?.ToString(), out Guid col10) ? col10 : Guid.Empty
                             };
-                            myTableList.Add(myTable);
-                        }
 
-                        _context.onemildata.AddRange(myTableList);
-                        await _context.SaveChangesAsync();
+                            _context.onemildata.Add(myTable);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Hata loglama
+                            Console.WriteLine($"Error parsing row: {ex.Message}");
+                            return StatusCode(500, $"Error parsing row: {ex.Message}");
+                        }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                return BadRequest($"An error occurred while processing the file: {ex.Message}");
-            }
 
-            return RedirectToAction("Index");
+            return Ok("File imported successfully.");
         }
 
-        private bool VerifyMyTableData(MyTable myTable)
-        {
-            // Burada veri doğrulama işlemlerini yapabilirsiniz
-            // Örnek olarak:
-            if (string.IsNullOrEmpty(myTable.Column1) || myTable.Column2 <= 0 || myTable.Column3 <= 0)
-            {
-                return false;
-            }
-            return true;
-        }
-        */
+
     }
 }
