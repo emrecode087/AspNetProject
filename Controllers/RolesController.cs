@@ -87,7 +87,6 @@ namespace ProjectOneMil.Controllers
 			return View(model);
 		}
 
-		/*
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
 		{
@@ -106,7 +105,7 @@ namespace ProjectOneMil.Controllers
 			}
 			return RedirectToAction("Index");
 		}
-        */
+       
 	}
 
 }

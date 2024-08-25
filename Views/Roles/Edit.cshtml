@@ -1,6 +1,6 @@
 ﻿@model AppRole
 
-<h2 class="h5 text-primary">Edit Role</h2>
+<h2 class="h5 text-danger">Edit Role</h2>
 <hr />
 <form asp-action="Edit" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -10,7 +10,7 @@
         <input asp-for="Name" class="form-control" />
     </div>
     <hr />
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-danger">Save</button>
 </form>
 
 <hr />
@@ -39,7 +39,7 @@
                     <td>@user.FullName</td>
                     <td>@user.Email</td>
                     <td>
-                        <a asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-dark btn-sm">Edit</a>
                     </td>
                 </tr>
             }
