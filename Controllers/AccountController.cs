@@ -55,6 +55,14 @@ namespace ProjectOneMil.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				// Check if the email is already registered
+				var existingUser = await _userManager.FindByEmailAsync(model.Email);
+				if (existingUser != null)
+				{
+					ModelState.AddModelError("", "This email is already registered.");
+					return View(model);
+				}
+
 				var user = new AppUser
 				{
 					UserName = model.UserName,
