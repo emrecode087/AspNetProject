@@ -4,11 +4,17 @@ using ProjectOneMil.Models;
 
 namespace ProjectOneMil.Controllers
 {
+	/// <summary>
+	/// The RolesController class handles actions related to user roles such as creating, editing, and deleting roles.
+	/// </summary>
 	public class RolesController : Controller
 	{
 		private readonly RoleManager<AppRole> _roleManager;
 		private readonly UserManager<AppUser> _userManager;
 
+		/// <summary>
+		/// Initializes a new instance of the RolesController class.
+		/// </summary>
 		public RolesController(
 			RoleManager<AppRole> roleManager,
 			UserManager<AppUser> userManager)
@@ -17,18 +23,28 @@ namespace ProjectOneMil.Controllers
 			_userManager = userManager;
 		}
 
+		/// <summary>
+		/// Displays the list of roles.
+		/// </summary>
 		[HttpGet]
 		public IActionResult Index()
 		{
 			var roles = _roleManager.Roles.ToList();
 			return View(roles);
 		}
+
+		/// <summary>
+		/// Displays the view for creating a new role.
+		/// </summary>
 		[HttpGet]
 		public IActionResult Create()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Handles the creation of a new role.
+		/// </summary>
 		[HttpPost]
 		public async Task<IActionResult> CreateAsync(AppRole model)
 		{
@@ -47,6 +63,9 @@ namespace ProjectOneMil.Controllers
 			return View(model);
 		}
 
+		/// <summary>
+		/// Displays the view for editing an existing role.
+		/// </summary>
 		public async Task<IActionResult> Edit(string id)
 		{
 			var role = await _roleManager.FindByIdAsync(id);
@@ -60,6 +79,9 @@ namespace ProjectOneMil.Controllers
 			return RedirectToAction("Index");
 		}
 
+		/// <summary>
+		/// Handles the editing of an existing role.
+		/// </summary>
 		[HttpPost]
 		public async Task<IActionResult> Edit(AppRole model)
 		{
@@ -87,8 +109,11 @@ namespace ProjectOneMil.Controllers
 			return View(model);
 		}
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+		/// <summary>
+		/// Handles the deletion of a role.
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> Delete(string id)
 		{
 			var role = await _roleManager.FindByIdAsync(id);
 			if (role != null)
@@ -105,7 +130,6 @@ namespace ProjectOneMil.Controllers
 			}
 			return RedirectToAction("Index");
 		}
-       
 	}
 
 }

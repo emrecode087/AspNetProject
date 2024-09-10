@@ -5,14 +5,19 @@ using ProjectOneMil.ViewModels;
 
 namespace ProjectOneMil.Controllers
 {
+	/// <summary>
+	/// The AccountController class handles user account-related actions such as login, registration, email confirmation, and logout.
+	/// </summary>
 	public class AccountController : Controller
 	{
-
 		private UserManager<AppUser> _userManager;
 		private RoleManager<AppRole> _roleManager;
 		private SignInManager<AppUser> _signInManager;
 		private IEmailSender _emailSender;
 
+		/// <summary>
+		/// Initializes a new instance of the AccountController class.
+		/// </summary>
 		public AccountController(
 			UserManager<AppUser> userManager,
 			RoleManager<AppRole> roleManager,
@@ -25,17 +30,26 @@ namespace ProjectOneMil.Controllers
 			_emailSender = emailSender;
 		}
 
+		/// <summary>
+		/// Displays the login view.
+		/// </summary>
 		[HttpGet]
 		public IActionResult Login()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Displays the user registration view.
+		/// </summary>
 		public IActionResult Create()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Handles user registration.
+		/// </summary>
 		[HttpPost]
 		public async Task<IActionResult> Create(CreateViewModel model)
 		{
@@ -55,7 +69,6 @@ namespace ProjectOneMil.Controllers
 					var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 					var url = Url.Action("ConfirmEmail", "Account", new { user.Id, token });
 
-					//email
 					await _emailSender.SendEmailAsync(user.Email,
 						"Confirm your email", $"Please confirm your account by clicking this link: <a href='http://localhost:5264{url}'>link</a>");
 
@@ -67,11 +80,13 @@ namespace ProjectOneMil.Controllers
 				{
 					ModelState.AddModelError("", err.Description);
 				}
-
 			}
 			return View(model);
 		}
 
+		/// <summary>
+		/// Confirms the user's email address.
+		/// </summary>
 		[HttpGet]
 		public async Task<IActionResult> ConfirmEmail(string Id, string token)
 		{
@@ -99,9 +114,11 @@ namespace ProjectOneMil.Controllers
 			}
 			TempData["message"] = "User not found";
 			return View();
-
 		}
 
+		/// <summary>
+		/// Handles user login.
+		/// </summary>
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel model)
 		{
@@ -147,12 +164,18 @@ namespace ProjectOneMil.Controllers
 			return View();
 		}
 
+		/// <summary>
+		/// Handles user logout.
+		/// </summary>
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Login");
 		}
 
+		/// <summary>
+		/// Displays the access denied view.
+		/// </summary>
 		public IActionResult AccessDenied()
 		{
 			return View("Login");

@@ -1,6 +1,9 @@
 ﻿namespace ProjectOneMil.Data
 {
-    public class MyTable
+	/// <summary>
+	/// The MyTable class represents a table in the database with various columns of different data types.
+	/// </summary>
+	public class MyTable
     {
         public int Id { get; set; }
         public string Column1 { get; set; }
